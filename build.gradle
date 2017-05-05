@@ -1,0 +1,36 @@
+buildscript {
+    ext.android_gradle_plugin_version = '2.3.1'
+    ext.kotlin_version = '1.1.2-3'
+    ext.jacoco_everywhere_plugin_version = '0.2.1'
+    ext.versions_plugin_version = '0.14.0'
+    ext.build_time_tracker_plugin_version = '0.9.0'
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:$android_gradle_plugin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.trickyandroid:jacoco-everywhere:$jacoco_everywhere_plugin_version"
+        classpath "com.github.ben-manes:gradle-versions-plugin:$versions_plugin_version"
+        classpath "net.rdrei.android.buildtimetracker:gradle-plugin:$build_time_tracker_plugin_version"
+    }
+}
+
+apply plugin: 'com.github.ben-manes.versions'
+apply plugin: 'build-time-tracker'
+
+buildtimetracker.reporters {
+    summary.shortenTaskNames false
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

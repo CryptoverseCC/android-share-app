@@ -1,0 +1,25 @@
+language: android
+jdk: oraclejdk8
+
+android:
+  components:
+    - tools
+    - platform-tools
+    - build-tools-25.0.2
+    - android-25
+    - extra-android-m2repository
+    - sys-img-armeabi-v7a-android-16
+
+env:
+  global:
+    ADB_INSTALL_TIMEOUT=6
+
+before_script:
+  - script/run_emulator
+
+after_script:
+  - adb logcat -d
+  - cat app/build/reports/lint-results.xml
+
+notifications:
+  slack: userfeeds:AsvcCusl8zszBQXwkToCYZzY
