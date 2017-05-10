@@ -1,10 +1,17 @@
 package io.userfeeds.share
 
 import android.content.ComponentName
+import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.drawable.Icon
+import android.os.Bundle
 import android.preference.PreferenceManager
 import android.service.chooser.ChooserTarget
 import android.service.chooser.ChooserTargetService
+import android.support.v4.content.FileProvider
+import com.squareup.moshi.Moshi
+import io.userfeeds.common.mapAdapter
+import java.io.File
 
 class ContextChooserTargetService : ChooserTargetService() {
 
@@ -14,7 +21,21 @@ class ContextChooserTargetService : ChooserTargetService() {
         return if (contextsString == null) {
             emptyList()
         } else {
-            TODO()
+            val moshi = Moshi.Builder().build()
+            val adapter = moshi.mapAdapter<String, ContextFromApi>()
+            val contexts = adapter.fromJson(contextsString)
+            contexts.map { (id, context) ->
+                val file = File(File(filesDir, "images"), "icon_${context.images.avatar.substringAfterLast('/')}")
+                val contentUri = FileProvider.getUriForFile(this, "io.userfeeds.fileprovider", file)
+                val icon = Icon.createWithContentUri(contentUri)
+                grantUriPermission("android", contentUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                ChooserTarget(
+                        context.hashtag,
+                        icon,
+                        1.0f,
+                        targetActivityName,
+                        Bundle().apply { putString("id", id) })
+            }
         }
     }
 }
