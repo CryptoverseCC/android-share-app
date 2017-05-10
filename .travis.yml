@@ -15,7 +15,7 @@ env:
     ADB_INSTALL_TIMEOUT=6
 
 before_script:
-  - script/run_emulator
+  - travis_wait script/run_emulator
 
 after_script:
   - adb logcat -d
