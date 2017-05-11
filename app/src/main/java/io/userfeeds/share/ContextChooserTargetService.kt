@@ -29,12 +29,17 @@ class ContextChooserTargetService : ChooserTargetService() {
                 val contentUri = FileProvider.getUriForFile(this, "io.userfeeds.fileprovider", file)
                 val icon = Icon.createWithContentUri(contentUri)
                 grantUriPermission("android", contentUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                val intentExtras = Bundle().apply {
+                    putString("context.id", id)
+                    putString("context.hashtag", context.hashtag)
+                    putString("context.imageUrl", "https://beta.userfeeds.io/api/contexts${context.images.avatar}")
+                }
                 ChooserTarget(
                         context.hashtag,
                         icon,
                         1.0f,
                         ComponentName(applicationContext, ShareActivity::class.java),
-                        Bundle().apply { putString("id", id) })
+                        intentExtras)
             }
         }
     }

@@ -1,5 +1,6 @@
 package io.userfeeds.share
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -22,17 +23,28 @@ class SelectContextActivity : AppCompatActivity() {
                 .subscribe(this::onContexts, this::onError)
     }
 
-    private fun toContextList(responseBody: ResponseBody): List<ContextFromApi> {
+    private fun toContextList(responseBody: ResponseBody): List<ShareContext> {
         val contextsString = responseBody.string()
         val moshi = Moshi.Builder().build()
         val adapter = moshi.mapAdapter<String, ContextFromApi>()
         val contextsMap = adapter.fromJson(contextsString)
-        return contextsMap.map { (_, context) -> context }
+        return contextsMap.map { (id, context) -> toContext(id, context) }
     }
 
-    private fun onContexts(contexts: List<ContextFromApi>) {
+    private fun toContext(id: String, context: ContextFromApi): ShareContext {
+        return ShareContext(
+                id = id,
+                hashtag = context.hashtag,
+                imageUrl = "https://beta.userfeeds.io/api/contexts${context.images.avatar}"
+        )
+    }
+
+    private fun onContexts(contexts: List<ShareContext>) {
         context_list.layoutManager = LinearLayoutManager(this)
-        context_list.adapter = ContextListAdapter(contexts)
+        context_list.adapter = ContextListAdapter(contexts) {
+            val text = intent.getStringExtra(Intent.EXTRA_TEXT)
+            ShareActivity.start(this, it, text)
+        }
     }
 
     private fun onError(error: Throwable) {

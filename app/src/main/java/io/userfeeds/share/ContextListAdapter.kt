@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 
-class ContextListAdapter(private val contexts: List<ContextFromApi>) : RecyclerView.Adapter<ContextListAdapter.Holder>() {
+class ContextListAdapter(private val contexts: List<ShareContext>, private val onContextSelect: (ShareContext) -> Unit) : RecyclerView.Adapter<ContextListAdapter.Holder>() {
 
     override fun getItemCount() = contexts.size
 
@@ -22,10 +22,13 @@ class ContextListAdapter(private val contexts: List<ContextFromApi>) : RecyclerV
         val context = contexts[position]
         val contextImageView = holder.itemView.findViewById(R.id.context_image) as ImageView
         Glide.with(holder.itemView.context)
-                .load("https://beta.userfeeds.io/api/contexts${context.images.avatar}")
+                .load(context.imageUrl)
                 .into(contextImageView)
         val contextTextView = holder.itemView.findViewById(R.id.context_name) as TextView
         contextTextView.text = context.hashtag
+        holder.itemView.setOnClickListener {
+            onContextSelect(context)
+        }
     }
 
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView)
