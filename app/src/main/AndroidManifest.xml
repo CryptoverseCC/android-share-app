@@ -31,7 +31,9 @@
                 android:name="android.service.chooser.chooser_target_service"
                 android:value=".ContextChooserTargetService"/>
         </activity>
-        <activity android:name=".ShareActivity"/>
+        <activity
+            android:name=".ShareActivity"
+            android:theme="@style/DirectShareDialogTheme"/>
 
         <service
             android:name=".ContextChooserTargetService"
