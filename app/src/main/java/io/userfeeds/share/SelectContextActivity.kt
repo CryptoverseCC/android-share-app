@@ -44,6 +44,7 @@ class SelectContextActivity : AppCompatActivity() {
         context_list.adapter = ContextListAdapter(contexts) {
             val text = intent.getStringExtra(Intent.EXTRA_TEXT)
             ShareActivity.start(this, it, text)
+            finish()
         }
     }
 

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.share_activity.*
 
 class ShareActivity : AppCompatActivity() {
@@ -46,11 +47,15 @@ class ShareActivity : AppCompatActivity() {
         )
         ThoughtApiProvider.get()
                 .call(body)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { share.isEnabled = false }
+                .doOnError { share.isEnabled = true }
                 .subscribe(this::onSuccess, this::onError)
     }
 
     private fun onSuccess() {
         Log.i("ShareActivity", "share success")
+        finish()
     }
 
     private fun onError(error: Throwable) {
