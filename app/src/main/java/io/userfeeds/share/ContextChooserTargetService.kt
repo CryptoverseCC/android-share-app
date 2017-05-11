@@ -33,7 +33,7 @@ class ContextChooserTargetService : ChooserTargetService() {
                         context.hashtag,
                         icon,
                         1.0f,
-                        targetActivityName,
+                        ComponentName(applicationContext, ShareActivity::class.java),
                         Bundle().apply { putString("id", id) })
             }
         }
