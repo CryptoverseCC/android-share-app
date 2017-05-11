@@ -18,7 +18,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ShareActivity">
+        <activity android:name=".SelectContextActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEND"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -29,6 +29,7 @@
                 android:name="android.service.chooser.chooser_target_service"
                 android:value=".ContextChooserTargetService"/>
         </activity>
+        <activity android:name=".ShareActivity"/>
 
         <service
             android:name=".ContextChooserTargetService"
