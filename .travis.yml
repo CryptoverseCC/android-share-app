@@ -19,7 +19,7 @@ env:
   - API=24
 
 before_script:
-  - travis_wait script/run_emulator
+  - script/run_emulator
 
 after_script:
   - adb logcat -d
