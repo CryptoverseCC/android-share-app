@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.share_activity.*
+import kotlin.LazyThreadSafetyMode.NONE
 
 class ShareActivity : AppCompatActivity() {
 
@@ -18,16 +19,16 @@ class ShareActivity : AppCompatActivity() {
             intent.putExtra(Intent.EXTRA_TEXT, text)
             context.startActivity(intent)
         }
+
+        fun contextExtras(shareContext: ShareContext) = Bundle().apply {
+            putString("context.id", shareContext.id)
+            putString("context.hashtag", shareContext.hashtag)
+            putString("context.imageUrl", shareContext.imageUrl)
+        }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.share_activity)
-        share.setOnClickListener { sendClaim() }
-    }
-
-    private fun sendClaim() {
-        val shareContext = if (intent.hasExtra("context")) {
+    private val shareContext by lazy(NONE) {
+        if (intent.hasExtra("context")) {
             intent.getParcelableExtra<ShareContext>("context")
         } else {
             ShareContext(
@@ -36,8 +37,16 @@ class ShareActivity : AppCompatActivity() {
                     intent.getStringExtra("context.imageUrl")
             )
         }
-        val text = intent.getStringExtra(Intent.EXTRA_TEXT)
-        Log.e("ShareActivity", "$shareContext / $text")
+    }
+    private val text by lazy { intent.getStringExtra(Intent.EXTRA_TEXT) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.share_activity)
+        share.setOnClickListener { sendClaim() }
+    }
+
+    private fun sendClaim() {
         val body = ThoughtDto(
                 shareContext.id,
                 listOf("Claim"),
