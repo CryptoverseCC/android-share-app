@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import android.view.View
 import com.squareup.moshi.Moshi
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.userfeeds.common.mapAdapter
@@ -20,6 +21,7 @@ class SelectContextActivity : AppCompatActivity() {
                 .call()
                 .map(this::toContextList)
                 .observeOn(AndroidSchedulers.mainThread())
+                .doFinally { progressBar.visibility = View.GONE }
                 .subscribe(this::onContexts, this::onError)
     }
 
@@ -40,8 +42,8 @@ class SelectContextActivity : AppCompatActivity() {
     }
 
     private fun onContexts(contexts: List<ShareContext>) {
-        context_list.layoutManager = LinearLayoutManager(this)
-        context_list.adapter = ContextListAdapter(contexts) {
+        contextList.layoutManager = LinearLayoutManager(this)
+        contextList.adapter = ContextListAdapter(contexts) {
             val text = intent.getStringExtra(Intent.EXTRA_TEXT)
             ShareActivity.start(this, it, text)
             finish()
