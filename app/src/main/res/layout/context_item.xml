@@ -13,14 +13,14 @@
     android:paddingTop="8dp">
 
     <ImageView
-        android:id="@+id/context_image"
+        android:id="@+id/contextImage"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginEnd="16dp"
         tools:ignore="RtlSymmetry"/>
 
     <TextView
-        android:id="@+id/context_name"
+        android:id="@+id/contextName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="Ethereum"/>

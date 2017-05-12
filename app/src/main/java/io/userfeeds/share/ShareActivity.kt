@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import com.bumptech.glide.Glide
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.share_activity.*
 import kotlin.LazyThreadSafetyMode.NONE
@@ -43,6 +44,8 @@ class ShareActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.share_activity)
+        Glide.with(this).load(shareContext.imageUrl).into(contextImage)
+        textToShare.setText(text)
         share.setOnClickListener { sendClaim() }
     }
 

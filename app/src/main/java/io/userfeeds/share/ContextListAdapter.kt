@@ -20,11 +20,11 @@ class ContextListAdapter(private val contexts: List<ShareContext>, private val o
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val context = contexts[position]
-        val contextImageView = holder.itemView.findViewById(R.id.context_image) as ImageView
+        val contextImageView = holder.itemView.findViewById(R.id.contextImage) as ImageView
         Glide.with(holder.itemView.context)
                 .load(context.imageUrl)
                 .into(contextImageView)
-        val contextTextView = holder.itemView.findViewById(R.id.context_name) as TextView
+        val contextTextView = holder.itemView.findViewById(R.id.contextName) as TextView
         contextTextView.text = context.hashtag
         holder.itemView.setOnClickListener {
             onContextSelect(context)
