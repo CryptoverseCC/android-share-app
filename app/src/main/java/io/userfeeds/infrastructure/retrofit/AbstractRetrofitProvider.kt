@@ -15,6 +15,13 @@ abstract class AbstractRetrofitProvider(baseUrl: String) : Provider<Retrofit>({
             .baseUrl(baseUrl)
             .client(OkHttpClient.Builder()
                     .apply { if (BuildConfig.DEBUG) addInterceptor(HttpLoggingInterceptor().setLevel(BODY)) }
+                    .addInterceptor {
+                        val newRequest = it.request()
+                                .newBuilder()
+                                .addHeader("Authorization", "59049c8fdfed920001508e2a94bad07aa8f846674ae92e8765bd926c")
+                                .build()
+                        it.proceed(newRequest)
+                    }
                     .build())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
             .addConverterFactory(MoshiConverterFactory.create())
