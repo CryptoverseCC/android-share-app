@@ -59,7 +59,11 @@ class ShareActivity : AppCompatActivity() {
                 type,
                 Claim(text, labels),
                 listOf(Credit("interface", "android:io.userfeeds.share")),
-                Signature("Ethereum.Transaction")
+                Signature(
+                        "SHA256withECDSA.secp256r1",
+                        "04ad7956d1b8176e11046a32c236c39ed7869b67b8ec1c84100831495c9edbb8e3f63a828b9e353def43c03e64dd107071935fc908aaa291482ad9843d1b131a67",
+                        "3045022035f989f95a07da022a07ead6b5eafe31756f6eddea7effd91c52dbca832ed457022100aa63a13f72991117b7fef1ffbe2930b80999619b3f920b0c13b5cdfbbf3eb474"
+                )
         )
         ThoughtApiProvider.get()
                 .call(body)

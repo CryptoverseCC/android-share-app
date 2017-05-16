@@ -12,4 +12,4 @@ data class Claim(val target: String, val labels: List<String>?)
 
 data class Credit(val type: String, val value: String)
 
-data class Signature(val type: String)
+data class Signature(val type: String, val creator: String, val signatureValue: String)
