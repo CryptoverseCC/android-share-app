@@ -41,6 +41,7 @@ class ShareActivity : AppCompatActivity() {
         }
     }
     private val text by lazy { intent.getStringExtra(Intent.EXTRA_TEXT) }
+    private val label: String? by lazy { intent.getStringExtra("label") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,10 +52,12 @@ class ShareActivity : AppCompatActivity() {
     }
 
     private fun sendClaim() {
+        val labels = if (label != null) listOf(label!!) else null
+        val type = if (label != null) listOf("Claim", "Label") else listOf("Claim")
         val body = ThoughtDto(
                 shareContext.id,
-                listOf("Claim"),
-                Claim("text:$text"),
+                type,
+                Claim("text:$text", labels),
                 listOf(Credit("interface", "android:io.userfeeds.share")),
                 Signature("Ethereum.Transaction")
         )

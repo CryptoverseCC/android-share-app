@@ -8,7 +8,7 @@ data class ThoughtDto(
         val signature: Signature
 )
 
-data class Claim(val target: String)
+data class Claim(val target: String, val labels: List<String>?)
 
 data class Credit(val type: String, val value: String)
 
