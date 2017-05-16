@@ -57,7 +57,7 @@ class ShareActivity : AppCompatActivity() {
         val body = ThoughtDto(
                 shareContext.id,
                 type,
-                Claim("text:$text", labels),
+                Claim(text, labels),
                 listOf(Credit("interface", "android:io.userfeeds.share")),
                 Signature("Ethereum.Transaction")
         )
