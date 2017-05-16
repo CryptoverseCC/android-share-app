@@ -14,15 +14,33 @@ import okhttp3.ResponseBody
 
 class SelectContextActivity : AppCompatActivity() {
 
+    private val shareContext by lazy(LazyThreadSafetyMode.NONE) {
+        val id: String? = intent.getStringExtra("io.userfeeds.share.context.id")
+        val hashtag: String? = intent.getStringExtra("io.userfeeds.share.context.hashtag")
+        val imageUrl: String? = intent.getStringExtra("io.userfeeds.share.context.imageUrl")
+        if (id != null && hashtag != null && imageUrl != null) {
+            ShareContext(id, hashtag, imageUrl)
+        } else {
+            null
+        }
+    }
+    private val text by lazy { intent.getStringExtra(Intent.EXTRA_TEXT) }
+    private val label by lazy { intent.getStringExtra("io.userfeeds.share.label") }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.select_context_activity)
-        ContextsApiProvider.get()
-                .call()
-                .map(this::toContextList)
-                .observeOn(AndroidSchedulers.mainThread())
-                .doFinally { progressBar.visibility = View.GONE }
-                .subscribe(this::onContexts, this::onError)
+        val shareCtx = shareContext
+        if (shareCtx != null) {
+            startShareActivity(shareCtx)
+        } else {
+            ContextsApiProvider.get()
+                    .call()
+                    .map(this::toContextList)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doFinally { progressBar.visibility = View.GONE }
+                    .subscribe(this::onContexts, this::onError)
+        }
     }
 
     private fun toContextList(responseBody: ResponseBody): List<ShareContext> {
@@ -43,11 +61,12 @@ class SelectContextActivity : AppCompatActivity() {
 
     private fun onContexts(contexts: List<ShareContext>) {
         contextList.layoutManager = LinearLayoutManager(this)
-        contextList.adapter = ContextListAdapter(contexts) {
-            val text = intent.getStringExtra(Intent.EXTRA_TEXT)
-            ShareActivity.start(this, it, text)
-            finish()
-        }
+        contextList.adapter = ContextListAdapter(contexts, this::startShareActivity)
+    }
+
+    private fun startShareActivity(shareContext: ShareContext) {
+        ShareActivity.start(this, shareContext, label, text)
+        finish()
     }
 
     private fun onError(error: Throwable) {

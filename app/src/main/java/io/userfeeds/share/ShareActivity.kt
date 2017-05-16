@@ -14,9 +14,10 @@ class ShareActivity : AppCompatActivity() {
 
     companion object {
 
-        fun start(context: Context, shareContext: ShareContext, text: String) {
+        fun start(context: Context, shareContext: ShareContext, label: String?, text: String) {
             val intent = Intent(context, ShareActivity::class.java)
             intent.putExtra("context", shareContext)
+            intent.putExtra("label", label)
             intent.putExtra(Intent.EXTRA_TEXT, text)
             context.startActivity(intent)
         }
