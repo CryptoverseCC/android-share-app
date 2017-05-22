@@ -6,8 +6,15 @@
     android:orientation="vertical">
 
     <TextView
-        android:text="Main!"
+        android:id="@+id/debugView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="Main!"/>
+
+    <Button
+        android:id="@+id/importIdentity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Import identity"/>
 
 </LinearLayout>
