@@ -54,10 +54,11 @@ class ShareActivity : AppCompatActivity() {
     private fun sendClaim() {
         val labels = if (label != null) listOf(label!!) else null
         val type = if (label != null) listOf("Claim", "Label") else listOf("Claim")
+        val target = textToShare.text.toString()
         val body = ThoughtDto(
                 shareContext.id,
                 type,
-                Claim(text, labels),
+                Claim(target, labels),
                 listOf(Credit("interface", "android:io.userfeeds.share")),
                 Signature(
                         "SHA256withECDSA.secp256r1",
