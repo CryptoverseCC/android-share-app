@@ -8,8 +8,8 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import io.userfeeds.common.listAdapter
 import io.userfeeds.sdk.core.UserfeedsSdk
+import io.userfeeds.sdk.core.UserfeedsService
 import io.userfeeds.sdk.core.context.ShareContext
-import io.userfeeds.sdk.core.context.getContexts
 import java.io.File
 import java.io.FileOutputStream
 import java.net.URL
@@ -21,7 +21,7 @@ class ShareApp : Application() {
         UserfeedsSdk.initialize(
                 apiKey = "59049c8fdfed920001508e2a94bad07aa8f846674ae92e8765bd926c",
                 debug = BuildConfig.DEBUG)
-        getContexts()
+        UserfeedsService.get().getContexts()
                 .subscribe(this::onContexts, this::onError)
     }
 

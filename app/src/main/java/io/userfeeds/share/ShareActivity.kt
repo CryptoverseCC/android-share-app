@@ -7,9 +7,9 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.bumptech.glide.Glide
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.userfeeds.sdk.core.UserfeedsService
 import io.userfeeds.sdk.core.context.ShareContext
 import io.userfeeds.sdk.core.storage.Signature
-import io.userfeeds.sdk.core.storage.putClaim
 import kotlinx.android.synthetic.main.share_activity.*
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -55,7 +55,7 @@ class ShareActivity : AppCompatActivity() {
     }
 
     private fun sendClaim() {
-        putClaim(
+        UserfeedsService.get().putClaim(
                 shareContext,
                 if (label != null) listOf("Claim", "Label") else listOf("Claim"),
                 textToShare.text.toString(),

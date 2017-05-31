@@ -7,8 +7,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.View
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.userfeeds.sdk.core.UserfeedsService
 import io.userfeeds.sdk.core.context.ShareContext
-import io.userfeeds.sdk.core.context.getContexts
 import kotlinx.android.synthetic.main.select_context_activity.*
 
 class SelectContextActivity : AppCompatActivity() {
@@ -33,7 +33,7 @@ class SelectContextActivity : AppCompatActivity() {
         if (shareCtx != null) {
             startShareActivity(shareCtx)
         } else {
-            getContexts()
+            UserfeedsService.get().getContexts()
                     .observeOn(AndroidSchedulers.mainThread())
                     .doFinally { progressBar.visibility = View.GONE }
                     .subscribe(this::onContexts, this::onError)
