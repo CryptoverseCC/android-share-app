@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.userfeeds.sdk.core.UserfeedsService
 import io.userfeeds.sdk.core.context.ShareContext
-import io.userfeeds.sdk.core.storage.Signature
+import io.userfeeds.sdk.core.signing.KeyPairHex
 import kotlinx.android.synthetic.main.share_activity.*
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -61,11 +61,9 @@ class ShareActivity : AppCompatActivity() {
                 textToShare.text.toString(),
                 if (label != null) listOf(label!!) else null,
                 "android:io.userfeeds.share",
-                Signature(
-                        "SHA256withECDSA.secp256r1",
-                        "04ad7956d1b8176e11046a32c236c39ed7869b67b8ec1c84100831495c9edbb8e3f63a828b9e353def43c03e64dd107071935fc908aaa291482ad9843d1b131a67",
-                        "3045022035f989f95a07da022a07ead6b5eafe31756f6eddea7effd91c52dbca832ed457022100aa63a13f72991117b7fef1ffbe2930b80999619b3f920b0c13b5cdfbbf3eb474"
-                )
+                KeyPairHex(
+                        "308193020100301306072a8648ce3d020106082a8648ce3d0301070479307702010104200f08c82cf25ff675525d5f3248a323d40b8e459d3ebde39921ea2201d3e333e0a00a06082a8648ce3d030107a14403420004c707bde221a1466ca7c43db02be98367ed2a2208adedab63f01169c203000b3de20a19d4cdc50ff46cd52718314bdba5170b4719225d7e6bae27589a699e6f1b",
+                        "3059301306072a8648ce3d020106082a8648ce3d03010703420004c707bde221a1466ca7c43db02be98367ed2a2208adedab63f01169c203000b3de20a19d4cdc50ff46cd52718314bdba5170b4719225d7e6bae27589a699e6f1b")
         )
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { share.isEnabled = false }
