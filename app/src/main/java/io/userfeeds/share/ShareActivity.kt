@@ -76,7 +76,7 @@ class ShareActivity : AppCompatActivity() {
     private fun sendClaim() {
         UserfeedsService.get().putClaim(
                 shareContext.id,
-                if (label != null) listOf("labels") else emptyList(),
+                if (label != null) listOf("link", "labels") else listOf("link"),
                 Claim(
                         target = urlView.text.toString(),
                         title = titleView.text.toString(),
