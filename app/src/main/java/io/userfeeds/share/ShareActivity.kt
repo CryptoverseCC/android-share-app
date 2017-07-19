@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import com.bumptech.glide.Glide
+import android.util.Patterns
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.userfeeds.sdk.core.UserfeedsService
 import io.userfeeds.sdk.core.signing.KeyPairHex
@@ -49,9 +49,28 @@ class ShareActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.share_activity)
-        Glide.with(this).load(shareContext.imageId).into(contextImage)
-        textToShare.setText(text)
+        contextImage.setImageResource(shareContext.imageId)
+        if (savedInstanceState == null) parseText()
+        switchTitleSummaryButton.setOnClickListener { switchTitleSummary() }
         share.setOnClickListener { sendClaim() }
+    }
+
+    private fun parseText() {
+        val matcher = Patterns.WEB_URL.matcher(text)
+        if (matcher.find()) {
+            val url = matcher.group()
+            val summary = matcher.replaceFirst("").trim()
+            urlView.setText(url)
+            summaryView.setText(summary)
+        } else {
+            summaryView.setText(text)
+        }
+    }
+
+    private fun switchTitleSummary() {
+        val tmp = titleView.text
+        titleView.text = summaryView.text
+        summaryView.text = tmp
     }
 
     private fun sendClaim() {
@@ -59,7 +78,9 @@ class ShareActivity : AppCompatActivity() {
                 shareContext.id,
                 if (label != null) listOf("labels") else emptyList(),
                 Claim(
-                        target = textToShare.text.toString(),
+                        target = urlView.text.toString(),
+                        title = titleView.text.toString(),
+                        summary = summaryView.text.toString(),
                         labels = if (label != null) listOf(label!!) else null
                 ),
                 "android:io.userfeeds.share",

@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
 
 class ContextListAdapter(private val contexts: List<ShareContext>, private val onContextSelect: (ShareContext) -> Unit) : RecyclerView.Adapter<ContextListAdapter.Holder>() {
 
@@ -21,9 +20,7 @@ class ContextListAdapter(private val contexts: List<ShareContext>, private val o
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val context = contexts[position]
         val contextImageView = holder.itemView.findViewById(R.id.contextImage) as ImageView
-        Glide.with(holder.itemView.context)
-                .load(context.imageId)
-                .into(contextImageView)
+        contextImageView.setImageResource(context.imageId)
         val contextTextView = holder.itemView.findViewById(R.id.contextName) as TextView
         contextTextView.text = context.name
         holder.itemView.setOnClickListener {
