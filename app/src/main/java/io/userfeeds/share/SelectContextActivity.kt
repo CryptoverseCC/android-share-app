@@ -4,21 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
-import android.view.View
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.userfeeds.sdk.core.UserfeedsService
-import io.userfeeds.sdk.core.context.ShareContext
 import kotlinx.android.synthetic.main.select_context_activity.*
 
 class SelectContextActivity : AppCompatActivity() {
 
     private val shareContext by lazy(LazyThreadSafetyMode.NONE) {
-        val id: String? = intent.getStringExtra("io.userfeeds.share.context.id")
-        val hashtag: String? = intent.getStringExtra("io.userfeeds.share.context.hashtag")
-        val imageUrl: String? = intent.getStringExtra("io.userfeeds.share.context.imageUrl")
-        if (id != null && hashtag != null && imageUrl != null) {
-            ShareContext(id, hashtag, imageUrl)
+        val id: String? = intent.getStringExtra("io.userfeeds.share.context")
+        if (id != null) {
+            contexts.firstOrNull { it.id == id } ?: ShareContext(id, "[$id]", 0)
         } else {
             null
         }
@@ -33,24 +26,13 @@ class SelectContextActivity : AppCompatActivity() {
         if (shareCtx != null) {
             startShareActivity(shareCtx)
         } else {
-            UserfeedsService.get().getContexts()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doFinally { progressBar.visibility = View.GONE }
-                    .subscribe(this::onContexts, this::onError)
+            contextList.layoutManager = LinearLayoutManager(this)
+            contextList.adapter = ContextListAdapter(contexts, this::startShareActivity)
         }
-    }
-
-    private fun onContexts(contexts: List<ShareContext>) {
-        contextList.layoutManager = LinearLayoutManager(this)
-        contextList.adapter = ContextListAdapter(contexts, this::startShareActivity)
     }
 
     private fun startShareActivity(shareContext: ShareContext) {
         ShareActivity.start(this, shareContext, label, text)
         finish()
-    }
-
-    private fun onError(error: Throwable) {
-        Log.e("ShareApp", "error", error)
     }
 }

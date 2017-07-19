@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import io.userfeeds.sdk.core.context.ShareContext
 
 class ContextListAdapter(private val contexts: List<ShareContext>, private val onContextSelect: (ShareContext) -> Unit) : RecyclerView.Adapter<ContextListAdapter.Holder>() {
 
@@ -23,10 +22,10 @@ class ContextListAdapter(private val contexts: List<ShareContext>, private val o
         val context = contexts[position]
         val contextImageView = holder.itemView.findViewById(R.id.contextImage) as ImageView
         Glide.with(holder.itemView.context)
-                .load(context.imageUrl)
+                .load(context.imageId)
                 .into(contextImageView)
         val contextTextView = holder.itemView.findViewById(R.id.contextName) as TextView
-        contextTextView.text = context.hashtag
+        contextTextView.text = context.name
         holder.itemView.setOnClickListener {
             onContextSelect(context)
         }

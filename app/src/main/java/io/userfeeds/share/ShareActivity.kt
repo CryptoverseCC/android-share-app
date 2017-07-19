@@ -8,8 +8,8 @@ import android.util.Log
 import com.bumptech.glide.Glide
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.userfeeds.sdk.core.UserfeedsService
-import io.userfeeds.sdk.core.context.ShareContext
 import io.userfeeds.sdk.core.signing.KeyPairHex
+import io.userfeeds.sdk.core.storage.Claim
 import kotlinx.android.synthetic.main.share_activity.*
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -27,8 +27,8 @@ class ShareActivity : AppCompatActivity() {
 
         fun contextExtras(shareContext: ShareContext) = Bundle().apply {
             putString("context.id", shareContext.id)
-            putString("context.hashtag", shareContext.hashtag)
-            putString("context.imageUrl", shareContext.imageUrl)
+            putString("context.name", shareContext.name)
+            putInt("context.imageId", shareContext.imageId)
         }
     }
 
@@ -38,8 +38,8 @@ class ShareActivity : AppCompatActivity() {
         } else {
             ShareContext(
                     intent.getStringExtra("context.id"),
-                    intent.getStringExtra("context.hashtag"),
-                    intent.getStringExtra("context.imageUrl")
+                    intent.getStringExtra("context.name"),
+                    intent.getIntExtra("context.imageId", 0)
             )
         }
     }
@@ -49,17 +49,19 @@ class ShareActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.share_activity)
-        Glide.with(this).load(shareContext.imageUrl).into(contextImage)
+        Glide.with(this).load(shareContext.imageId).into(contextImage)
         textToShare.setText(text)
         share.setOnClickListener { sendClaim() }
     }
 
     private fun sendClaim() {
         UserfeedsService.get().putClaim(
-                shareContext,
-                if (label != null) listOf("Claim", "Label") else listOf("Claim"),
-                textToShare.text.toString(),
-                if (label != null) listOf(label!!) else null,
+                shareContext.id,
+                if (label != null) listOf("labels") else emptyList(),
+                Claim(
+                        target = textToShare.text.toString(),
+                        labels = if (label != null) listOf(label!!) else null
+                ),
                 "android:io.userfeeds.share",
                 KeyPairHex(
                         "308193020100301306072a8648ce3d020106082a8648ce3d0301070479307702010104200f08c82cf25ff675525d5f3248a323d40b8e459d3ebde39921ea2201d3e333e0a00a06082a8648ce3d030107a14403420004c707bde221a1466ca7c43db02be98367ed2a2208adedab63f01169c203000b3de20a19d4cdc50ff46cd52718314bdba5170b4719225d7e6bae27589a699e6f1b",
