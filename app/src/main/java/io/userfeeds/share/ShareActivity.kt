@@ -6,10 +6,12 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.util.Patterns
+import com.squareup.moshi.Moshi
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.userfeeds.sdk.core.UserfeedsService
-import io.userfeeds.sdk.core.signing.KeyPairHex
 import io.userfeeds.sdk.core.storage.Claim
+import io.userfeeds.sdk.core.storage.ClaimWrapper
+import io.userfeeds.sdk.core.storage.Signature
 import kotlinx.android.synthetic.main.share_activity.*
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -30,6 +32,8 @@ class ShareActivity : AppCompatActivity() {
             putString("context.name", shareContext.name)
             putInt("context.imageId", shareContext.imageId)
         }
+
+        private const val SIGN_REQUEST_CODE = 1001
     }
 
     private val shareContext by lazy(NONE) {
@@ -52,7 +56,7 @@ class ShareActivity : AppCompatActivity() {
         contextImage.setImageResource(shareContext.imageId)
         if (savedInstanceState == null) parseText()
         switchTitleSummaryButton.setOnClickListener { switchTitleSummary() }
-        share.setOnClickListener { sendClaim() }
+        share.setOnClickListener { requestClaimSign() }
     }
 
     private fun parseText() {
@@ -73,21 +77,40 @@ class ShareActivity : AppCompatActivity() {
         summaryView.text = tmp
     }
 
-    private fun sendClaim() {
-        UserfeedsService.get().putClaim(
-                shareContext.id,
-                if (label != null) listOf("link", "labels") else listOf("link"),
-                Claim(
-                        target = urlView.text.toString(),
-                        title = titleView.text.toString(),
-                        summary = summaryView.text.toString(),
-                        labels = if (label != null) listOf(label!!) else null
-                ),
-                "android:io.userfeeds.share",
-                KeyPairHex(
-                        "308193020100301306072a8648ce3d020106082a8648ce3d0301070479307702010104200f08c82cf25ff675525d5f3248a323d40b8e459d3ebde39921ea2201d3e333e0a00a06082a8648ce3d030107a14403420004c707bde221a1466ca7c43db02be98367ed2a2208adedab63f01169c203000b3de20a19d4cdc50ff46cd52718314bdba5170b4719225d7e6bae27589a699e6f1b",
-                        "3059301306072a8648ce3d020106082a8648ce3d03010703420004c707bde221a1466ca7c43db02be98367ed2a2208adedab63f01169c203000b3de20a19d4cdc50ff46cd52718314bdba5170b4719225d7e6bae27589a699e6f1b")
-        )
+    private fun requestClaimSign() {
+        val intent = Intent("io.userfeeds.identity.SIGN_MESSAGE")
+        intent.putExtra("io.userfeeds.identity.message", claimWrapper.toJson())
+        startActivityForResult(intent, SIGN_REQUEST_CODE)
+    }
+
+    private val claimWrapper get() = ClaimWrapper.create(
+            context = shareContext.id,
+            type = if (label != null) listOf("link", "labels") else listOf("link"),
+            claim = Claim(
+                    target = urlView.text.toString(),
+                    title = titleView.text.toString(),
+                    summary = summaryView.text.toString(),
+                    labels = if (label != null) listOf(label!!) else null
+            ),
+            clientId = "android:io.userfeeds.share")
+
+    private inline fun <reified T> T.toJson(): String {
+        return Moshi.Builder()
+                .build()
+                .adapter(T::class.java)
+                .toJson(this)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == SIGN_REQUEST_CODE && resultCode == RESULT_OK) {
+            val signature = Signature.fromIntentData(data!!)
+            sendClaim(signature)
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun sendClaim(signature: Signature) {
+        UserfeedsService.get().putClaim(claimWrapper, signature)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { share.isEnabled = false }
                 .doOnError { share.isEnabled = true }

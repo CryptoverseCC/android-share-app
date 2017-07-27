@@ -17,7 +17,7 @@ class ShareContext(val id: RankingContext, val name: String, @IdRes val imageId:
 
     companion object {
 
-        @JvmStatic
+        @JvmField
         val CREATOR = object : Parcelable.Creator<ShareContext> {
 
             override fun createFromParcel(source: Parcel) = ShareContext(
