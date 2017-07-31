@@ -10,6 +10,7 @@ val contexts by lazy {
             ShareContext("ethereum:0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", "Unicorn", R.drawable.context_unicorn),
             ShareContext("ethereum:0xa74476443119a942de498590fe1f2454d7d4ac0d", "Golem", R.drawable.context_golem),
             ShareContext("ethereum:0xaec2e87e0a235266d9c5adc9deb4b2e29b54d009", "Singulardtv", R.drawable.context_singulardtv),
-            ShareContext("ethereum:0xaf30d2a7e90d7dc361c8c4585e9bb7d2f6f15bc7", "Firstblood", R.drawable.context_firstblood)
+            ShareContext("ethereum:0xaf30d2a7e90d7dc361c8c4585e9bb7d2f6f15bc7", "Firstblood", R.drawable.context_firstblood),
+            ShareContext("rinkeby:0x0406735fc1a657398941a50a0602eddf9723a6c8", "mg6", R.drawable.context_ethereum)
     )
 }
